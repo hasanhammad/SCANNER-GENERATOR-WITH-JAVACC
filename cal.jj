@@ -1,0 +1,99 @@
+options
+ {
+  IGNORE_CASE = false;
+  OPTIMIZE_TOKEN_MANAGER = true;
+ }
+
+PARSER_BEGIN(cal)
+
+import java.io.*;
+
+public class cal {
+
+  public static void main(String[] args) throws FileNotFoundException
+  {
+    if ( args.length < 1 ) {
+       System.out.println("Please enter the filename.");
+       System.exit(1);
+    }
+
+    SimpleCharStream stream = new SimpleCharStream(
+                                  new FileInputStream(args[0]),0,0);
+    Token temp_token = null;
+
+    calTokenManager TkMgr = new calTokenManager(stream);
+
+    do {
+        temp_token = TkMgr.getNextToken();
+
+        switch(temp_token.kind) {
+
+     case LEFT_PAREN:    System.out.println("LEFT_PAREN:=> " + temp_token.image);
+           break;
+		    case ERROR:    System.out.println("ERROR:=> " + temp_token.image);
+           break;
+     case RIGHT_PAREN:   System.out.println("RIGHT_PAREN:=> " + temp_token.image);
+           break;
+     case INCREMENT:     System.out.println("INCREMENT:=> " + temp_token.image);
+           break;
+	 case DECREMENT:    System.out.println("DECREMENT:=> " + temp_token.image);
+           break;
+	 case LEFT_BRACE:    System.out.println("LEFT_BRACE:=> " + temp_token.image);
+           break; 
+     case RIGHT_BRACE:    System.out.println("RIGHT_BRACE:=> " + temp_token.image);
+           break;
+     case SEMICOLON:    System.out.println("SEMICOLON:=> " + temp_token.image);
+           break;
+     case COMMA:    System.out.println("COMMA:=> " + temp_token.image);
+           break;
+	 case X:    System.out.println("X:=> " + temp_token.image);
+           break;
+	 case Y:    System.out.println("Y:=> " + temp_token.image);
+           break;
+	 case ASIGNMENT:    System.out.println("ASIGNMENT:=> " + temp_token.image);
+           break;
+	 case IDENTIFIER:    System.out.println("IDENTIFIER:=> " + temp_token.image);
+           break;
+	 case FLOAT_NUMBER :    System.out.println("FLOAT_NUMBER :=> " + temp_token.image);
+           break;
+	 case INT_NUMBER :    System.out.println("INT_NUMBER :=> " + temp_token.image);
+           break;	   
+		
+         default:
+           if ( temp_token.kind != EOF )
+             System.out.println("OTHER: " + temp_token.image);
+           break;
+        }
+    } while (temp_token.kind != EOF);
+  }
+}
+
+PARSER_END(cal)
+
+SKIP: /* Whitespace */
+{
+  "\t"
+| "\n"
+| "\r"
+| " "
+}
+
+TOKEN:
+{
+   <LEFT_PAREN:    "(" >
+|  <RIGHT_PAREN:    ")" >
+|  <INCREMENT:      "++" >
+|  <DECREMENT:      "--" >
+|  <LEFT_BRACE:    "{" >
+|  <RIGHT_BRACE:    "}" >
+|  <SEMICOLON: ";" >
+|  <COMMA:     "," >
+|  <X: "X" >
+|  <Y: "Y" >
+|  <ASIGNMENT : "= ">
+|  <IDENTIFIER : ["a"-"z","A"-"z","_"](["a"-"z","A"-"Z","0"-"9","_"])*>
+|  <INT_NUMBER : ("-")?(["0"-"9"])+ >
+|  <FLOAT_NUMBER :  ("-")?(["0"-"9"])+"."(["0"-"9"])*  |("-")?"."(["0"-"9"])+ >
+|  <ERROR :  ("-")?(["0"-"9"])+(["a"-"z","A"-"z","_"])+ |("-")?(".")(["0"-"9"])+(["a"-"z","A"-"z","_"])+ |("-")?(["0"-"9"])+(".")(["0"-"9"])*(["a"-"z","A"-"z","_"])+  >
+
+}
